@@ -13,7 +13,7 @@ export interface findFileExtraFileInfo {
   content?: string;
 }
 
-export const findFileExtra = async (opt: {
+const findFilesExtra = async (opt: {
   root: string;
   filePattern?: string;
   ignoreFilePattern?: string[];
@@ -103,3 +103,5 @@ export const findFileExtra = async (opt: {
 
   return files;
 };
+
+export default findFilesExtra;

@@ -1,6 +1,6 @@
 import path from "path";
 import chalk from "chalk";
-import { findFileExtra } from "../src/findFileExtra";
+import findFilesExtra from "../src/findFilesExtra";
 
 const testFileFolder = path.join(__dirname, "test-search-files");
 
@@ -8,7 +8,7 @@ console.log(`Test files are placed in ${testFileFolder}`);
 
 describe("find files", () => {
   it("should find files (without content search) (without content)", async () => {
-    let jsonFiles = await findFileExtra({
+    let jsonFiles = await findFilesExtra({
       root: testFileFolder,
       filePattern: "**/*.json",
     });
@@ -55,7 +55,7 @@ describe("find files", () => {
   });
 
   it("should find files (without content search) (with content)", async () => {
-    let jsonFiles = await findFileExtra({
+    let jsonFiles = await findFilesExtra({
       root: testFileFolder,
       filePattern: "**/*.json",
       loadFileContent: true,
@@ -69,7 +69,7 @@ describe("find files", () => {
   });
 
   it("should find files (without content search) (with content) (with json)", async () => {
-    let jsonFiles = await findFileExtra({
+    let jsonFiles = await findFilesExtra({
       root: testFileFolder,
       filePattern: "**/*.json",
       loadFileContent: true,
@@ -88,7 +88,7 @@ describe("find files", () => {
   // File search
 
   it("should find files (with content search as string) (with content) (with json)", async () => {
-    let jsonFiles = await findFileExtra({
+    let jsonFiles = await findFilesExtra({
       root: testFileFolder,
       fileContentPattern: "search-me",
     });
@@ -101,7 +101,7 @@ describe("find files", () => {
   });
 
   it("should find files (with content search as string) (with content) (with json)", async () => {
-    let jsonFiles = await findFileExtra({
+    let jsonFiles = await findFilesExtra({
       root: testFileFolder,
       fileContentPattern: /search\-me|searchMe/,
     });

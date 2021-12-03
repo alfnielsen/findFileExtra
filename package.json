@@ -1,5 +1,5 @@
 {
-  "name": "find-file-extra",
+  "name": "find-files-extra",
   "version": "1.0.0",
   "description": "Simple file finder with both file name and content search options",
   "main": "build/findFileExtra.js",
