@@ -14,18 +14,18 @@ export interface findFileExtraFileInfo {
 }
 
 export const findFileExtra = async (opt: {
-  rootFolderPath: string;
-  filePattern: string;
-  ignoreFilePattern: string[];
-  fileContentPattern?: RegExp;
+  root: string;
+  filePattern?: string;
+  ignoreFilePattern?: string[];
+  fileContentPattern?: RegExp | string;
   loadFileContent?: boolean;
   parseJson?: boolean;
   dot?: boolean;
   nocase?: boolean;
 }) => {
   let {
-    rootFolderPath,
-    filePattern = "**/*",
+    root,
+    filePattern = "**/*.*",
     ignoreFilePattern = ["**/bin/**", "**/node_modules/**", "**/obj/**"],
     fileContentPattern,
     loadFileContent = false,
@@ -40,7 +40,7 @@ export const findFileExtra = async (opt: {
 
   let fileNames = await glob(filePattern, {
     ignore: ignoreFilePattern,
-    cwd: rootFolderPath,
+    cwd: root,
     nocase,
     dot,
   });
@@ -49,14 +49,19 @@ export const findFileExtra = async (opt: {
 
   for (const pathFromRoot of fileNames) {
     if (fileContentPattern || loadFileContent) {
-      const fullPath = path.join(rootFolderPath, pathFromRoot);
+      const fullPath = path.join(root, pathFromRoot);
       const fileName = path.basename(fullPath);
       const dirFullPath = path.dirname(fullPath);
       const dirPathFromRoot = path.dirname(pathFromRoot);
-      const ext = path.extname(fileNames[0]);
-      const content = await fs.readFile(fileNames[0], "utf8");
-      if (fileContentPattern && !fileContentPattern.test(content)) {
-        continue;
+      const ext = path.extname(fullPath);
+      const content = await fs.readFile(fullPath, "utf8");
+      const json = parseJson && ext === ".json" ? JSON.parse(content) : undefined;
+      if (fileContentPattern) {
+        if (fileContentPattern instanceof RegExp && !fileContentPattern.test(content)) {
+          continue;
+        } else if (typeof fileContentPattern === "string" && content.indexOf(fileContentPattern) === -1) {
+          continue;
+        }
       }
       files.push({
         fullPath,
@@ -65,15 +70,24 @@ export const findFileExtra = async (opt: {
         fileName,
         dirFullPath,
         ext: ext,
-        json: parseJson && ext === "json" ? JSON.parse(content) : undefined,
+        json: json,
         content: loadFileContent ? content : undefined,
       });
     } else {
-      const fullPath = path.join(rootFolderPath, pathFromRoot);
+      const fullPath = path.join(root, pathFromRoot);
       const fileName = path.basename(fullPath);
       const dirFullPath = path.dirname(fullPath);
       const dirPathFromRoot = path.dirname(pathFromRoot);
-      const ext = path.extname(fileNames[0]);
+      const ext = path.extname(fullPath);
+      let content: string | undefined = undefined;
+      let json: any | undefined = undefined;
+      if (loadFileContent) {
+        content = await fs.readFile(fullPath, "utf8");
+        if (parseJson && ext === ".json") {
+          json = JSON.parse(content);
+        }
+      }
+
       files.push({
         fullPath,
         pathFromRoot,
@@ -81,8 +95,8 @@ export const findFileExtra = async (opt: {
         fileName,
         dirFullPath,
         ext: ext,
-        json: undefined,
-        content: undefined,
+        json: json,
+        content: content,
       });
     }
   }

@@ -1,0 +1,44 @@
+{
+  "name": "find-file-extra",
+  "version": "1.0.0",
+  "description": "Simple file finder with both file name and content search options",
+  "main": "build/findFileExtra.js",
+  "types": "build/findFileExtra.d.ts",
+  "files": [
+    "build/findFileExtra.js",
+    "build/findFileExtra.d.ts"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alfnielsen/findFileExtra.git"
+  },
+  "keywords": [
+    "find files",
+    "find",
+    "file",
+    "io"
+  ],
+  "author": "alfnielsen@gmail.com",
+  "license": "The Unlicense",
+  "bugs": {
+    "url": "https://github.com/alfnielsen/findFileExtra/issues"
+  },
+  "homepage": "https://github.com/alfnielsen/findFileExtra#readme",
+  "devDependencies": {
+    "@types/fs-extra": "^9.0.13",
+    "@types/jest": "^27.0.3",
+    "jest": "^27.4.3",
+    "ts-jest": "^27.0.7",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.2"
+  },
+  "dependencies": {
+    "fs-extra": "^10.0.0",
+    "glob-promise": "^4.2.2",
+    "path": "^0.12.7"
+  }
+}
