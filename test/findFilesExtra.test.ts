@@ -7,6 +7,13 @@ const testFileFolder = path.join(__dirname, "test-search-files");
 console.log(`Test files are placed in ${testFileFolder}`);
 
 describe("find files", () => {
+  it("should find all files when no filePattern is added", async () => {
+    let jsonFiles = await findFilesExtra({
+      root: testFileFolder,
+    });
+    expect(jsonFiles.length).toEqual(4);
+  });
+
   it("should find files (without content search) (without content)", async () => {
     let jsonFiles = await findFilesExtra({
       root: testFileFolder,

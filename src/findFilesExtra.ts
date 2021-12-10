@@ -9,7 +9,7 @@ export interface findFileExtraFileInfo {
   dirFullPath: string;
   dirPathFromRoot: string;
   ext: string;
-  json?: string;
+  json?: unknown;
   content?: string;
 }
 
