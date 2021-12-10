@@ -11,7 +11,7 @@ describe("find files", () => {
     let jsonFiles = await findFilesExtra({
       root: testFileFolder,
     });
-    expect(jsonFiles.length).toEqual(4);
+    expect(jsonFiles.length).toEqual(5);
   });
 
   it("should find files (without content search) (without content)", async () => {
@@ -19,7 +19,7 @@ describe("find files", () => {
       root: testFileFolder,
       filePattern: "**/*.json",
     });
-    expect(jsonFiles.length).toEqual(2);
+    expect(jsonFiles.length).toEqual(3);
 
     // sort by name
     jsonFiles = jsonFiles.sort((a, b) => a.fileName.localeCompare(b.fileName));
@@ -67,7 +67,7 @@ describe("find files", () => {
       filePattern: "**/*.json",
       loadFileContent: true,
     });
-    expect(jsonFiles.length).toEqual(2);
+    expect(jsonFiles.length).toEqual(3);
     // sort by name
     jsonFiles = jsonFiles.sort((a, b) => a.fileName.localeCompare(b.fileName));
 
@@ -82,7 +82,7 @@ describe("find files", () => {
       loadFileContent: true,
       parseJson: true,
     });
-    expect(jsonFiles.length).toEqual(2);
+    expect(jsonFiles.length).toEqual(3);
     // sort by name
     jsonFiles = jsonFiles.sort((a, b) => a.fileName.localeCompare(b.fileName));
 
@@ -90,6 +90,9 @@ describe("find files", () => {
     expect(jsonFiles[1].content).not.toBeUndefined();
     expect(jsonFiles[0].json).not.toBeUndefined();
     expect(jsonFiles[1].json).not.toBeUndefined();
+
+    let jsonValueName = (jsonFiles[2].json as { name: string }).name;
+    expect(jsonValueName).toBe("some-name");
   });
 
   // File search

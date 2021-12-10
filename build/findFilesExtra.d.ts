@@ -1,4 +1,4 @@
-export interface findFileExtraFileInfo {
+export interface IFindFileExtraFileInfo {
     fullPath: string;
     pathFromRoot: string;
     fileName: string;
@@ -8,7 +8,7 @@ export interface findFileExtraFileInfo {
     json?: unknown;
     content?: string;
 }
-declare const findFilesExtra: (opt: {
+export interface IFindFilesExtraOptions {
     root: string;
     filePattern?: string;
     ignoreFilePattern?: string[];
@@ -17,5 +17,6 @@ declare const findFilesExtra: (opt: {
     parseJson?: boolean;
     dot?: boolean;
     nocase?: boolean;
-}) => Promise<findFileExtraFileInfo[]>;
+}
+declare const findFilesExtra: (opt: IFindFilesExtraOptions) => Promise<IFindFileExtraFileInfo[]>;
 export default findFilesExtra;

@@ -2,7 +2,7 @@ import fs from "fs-extra";
 import path from "path";
 import glob from "glob-promise";
 
-export interface findFileExtraFileInfo {
+export interface IFindFileExtraFileInfo {
   fullPath: string;
   pathFromRoot: string;
   fileName: string;
@@ -13,7 +13,7 @@ export interface findFileExtraFileInfo {
   content?: string;
 }
 
-const findFilesExtra = async (opt: {
+export interface IFindFilesExtraOptions {
   root: string;
   filePattern?: string;
   ignoreFilePattern?: string[];
@@ -22,7 +22,9 @@ const findFilesExtra = async (opt: {
   parseJson?: boolean;
   dot?: boolean;
   nocase?: boolean;
-}) => {
+}
+
+const findFilesExtra = async (opt: IFindFilesExtraOptions) => {
   let {
     root,
     filePattern = "**/*.*",
@@ -45,17 +47,19 @@ const findFilesExtra = async (opt: {
     dot,
   });
 
-  const files: findFileExtraFileInfo[] = [];
+  const files: IFindFileExtraFileInfo[] = [];
 
   for (const pathFromRoot of fileNames) {
+    const fullPath = path.join(root, pathFromRoot);
+    const fileName = path.basename(fullPath);
+    const dirFullPath = path.dirname(fullPath);
+    const dirPathFromRoot = path.dirname(pathFromRoot);
+    const ext = path.extname(fullPath);
+    let content: string | undefined;
+    let json: unknown | undefined = undefined;
+
     if (fileContentPattern || loadFileContent) {
-      const fullPath = path.join(root, pathFromRoot);
-      const fileName = path.basename(fullPath);
-      const dirFullPath = path.dirname(fullPath);
-      const dirPathFromRoot = path.dirname(pathFromRoot);
-      const ext = path.extname(fullPath);
-      const content = await fs.readFile(fullPath, "utf8");
-      const json = parseJson && ext === ".json" ? JSON.parse(content) : undefined;
+      content = await fs.readFile(fullPath, "utf8");
       if (fileContentPattern) {
         if (fileContentPattern instanceof RegExp && !fileContentPattern.test(content)) {
           continue;
@@ -63,42 +67,26 @@ const findFilesExtra = async (opt: {
           continue;
         }
       }
-      files.push({
-        fullPath,
-        pathFromRoot,
-        dirPathFromRoot,
-        fileName,
-        dirFullPath,
-        ext: ext,
-        json: json,
-        content: loadFileContent ? content : undefined,
-      });
-    } else {
-      const fullPath = path.join(root, pathFromRoot);
-      const fileName = path.basename(fullPath);
-      const dirFullPath = path.dirname(fullPath);
-      const dirPathFromRoot = path.dirname(pathFromRoot);
-      const ext = path.extname(fullPath);
-      let content: string | undefined = undefined;
-      let json: any | undefined = undefined;
-      if (loadFileContent) {
-        content = await fs.readFile(fullPath, "utf8");
-        if (parseJson && ext === ".json") {
-          json = JSON.parse(content);
-        }
-      }
-
-      files.push({
-        fullPath,
-        pathFromRoot,
-        dirPathFromRoot,
-        fileName,
-        dirFullPath,
-        ext: ext,
-        json: json,
-        content: content,
-      });
     }
+
+    if (!loadFileContent) {
+      content = undefined;
+    }
+
+    if (content && parseJson && ext === ".json") {
+      json = JSON.parse(content);
+    }
+
+    files.push({
+      fullPath,
+      pathFromRoot,
+      dirPathFromRoot,
+      fileName,
+      dirFullPath,
+      ext: ext,
+      json: json,
+      content: loadFileContent ? content : undefined,
+    });
   }
 
   return files;

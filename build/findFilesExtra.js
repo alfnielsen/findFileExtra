@@ -19,14 +19,15 @@ const findFilesExtra = async (opt) => {
     });
     const files = [];
     for (const pathFromRoot of fileNames) {
+        const fullPath = path_1.default.join(root, pathFromRoot);
+        const fileName = path_1.default.basename(fullPath);
+        const dirFullPath = path_1.default.dirname(fullPath);
+        const dirPathFromRoot = path_1.default.dirname(pathFromRoot);
+        const ext = path_1.default.extname(fullPath);
+        let content;
+        let json = undefined;
         if (fileContentPattern || loadFileContent) {
-            const fullPath = path_1.default.join(root, pathFromRoot);
-            const fileName = path_1.default.basename(fullPath);
-            const dirFullPath = path_1.default.dirname(fullPath);
-            const dirPathFromRoot = path_1.default.dirname(pathFromRoot);
-            const ext = path_1.default.extname(fullPath);
-            const content = await fs_extra_1.default.readFile(fullPath, "utf8");
-            const json = parseJson && ext === ".json" ? JSON.parse(content) : undefined;
+            content = await fs_extra_1.default.readFile(fullPath, "utf8");
             if (fileContentPattern) {
                 if (fileContentPattern instanceof RegExp && !fileContentPattern.test(content)) {
                     continue;
@@ -35,42 +36,23 @@ const findFilesExtra = async (opt) => {
                     continue;
                 }
             }
-            files.push({
-                fullPath,
-                pathFromRoot,
-                dirPathFromRoot,
-                fileName,
-                dirFullPath,
-                ext: ext,
-                json: json,
-                content: loadFileContent ? content : undefined,
-            });
         }
-        else {
-            const fullPath = path_1.default.join(root, pathFromRoot);
-            const fileName = path_1.default.basename(fullPath);
-            const dirFullPath = path_1.default.dirname(fullPath);
-            const dirPathFromRoot = path_1.default.dirname(pathFromRoot);
-            const ext = path_1.default.extname(fullPath);
-            let content = undefined;
-            let json = undefined;
-            if (loadFileContent) {
-                content = await fs_extra_1.default.readFile(fullPath, "utf8");
-                if (parseJson && ext === ".json") {
-                    json = JSON.parse(content);
-                }
-            }
-            files.push({
-                fullPath,
-                pathFromRoot,
-                dirPathFromRoot,
-                fileName,
-                dirFullPath,
-                ext: ext,
-                json: json,
-                content: content,
-            });
+        if (!loadFileContent) {
+            content = undefined;
         }
+        if (content && parseJson && ext === ".json") {
+            json = JSON.parse(content);
+        }
+        files.push({
+            fullPath,
+            pathFromRoot,
+            dirPathFromRoot,
+            fileName,
+            dirFullPath,
+            ext: ext,
+            json: json,
+            content: loadFileContent ? content : undefined,
+        });
     }
     return files;
 };

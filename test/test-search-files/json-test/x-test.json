@@ -1,0 +1,14 @@
+{
+    "type": "some-type",
+    "name": "some-name",
+    "description": "some-description",
+    "variables": [
+        {
+            "name": "var1",
+            "description": "var1",
+            "pipes": [
+                "toPascalCase"
+            ]
+        }
+    ]
+}
