@@ -2,13 +2,21 @@
   "name": "find-files-extra",
   "version": "1.2.0",
   "description": "Simple file finder with both file name and content search options",
-  "main": "build/findFilesExtra.js",
   "types": "build/findFilesExtra.d.ts",
+  "type": "module",
+  "source": "src/findFilesExtra.ts",
+  "exports": {
+    "require": "./build/foo.cjs",
+    "default": "./build/findFilesExtra.modern.js"
+  },
+  "main": "./build/findFilesExtra.cjs",
+  "module": "./build/findFilesExtra.module.js",
+  "unpkg": "./build/findFilesExtra.umd.js",
   "files": [
     "build/*"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && microbundle --format modern,cjs,umd",
     "test": "jest"
   },
   "repository": {
@@ -31,6 +39,7 @@
     "@types/fs-extra": "^9.0.13",
     "@types/jest": "^27.0.3",
     "jest": "^27.4.3",
+    "microbundle": "^0.15.1",
     "ts-jest": "^27.0.7",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.2"
