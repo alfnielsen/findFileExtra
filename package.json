@@ -1,12 +1,12 @@
 {
   "name": "find-files-extra",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Simple file finder with both file name and content search options",
   "types": "build/findFilesExtra.d.ts",
   "type": "module",
   "source": "src/findFilesExtra.ts",
   "exports": {
-    "require": "./build/foo.cjs",
+    "require": "./build/findFilesExtra.cjs",
     "default": "./build/findFilesExtra.modern.js"
   },
   "main": "./build/findFilesExtra.cjs",
